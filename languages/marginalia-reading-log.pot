@@ -1,0 +1,367 @@
+# Copyright (C) 2024
+# This file is distributed under the GPL-2.0+.
+msgid ""
+msgstr ""
+"Project-Id-Version: Marginalia 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-01 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: marginalia-reading-log.php
+msgid "%d out of 5 stars"
+msgstr ""
+
+#: includes/class-marginalia-activator.php
+msgid "To Read"
+msgstr ""
+
+#: includes/class-marginalia-activator.php
+msgid "Currently Reading"
+msgstr ""
+
+#: includes/class-marginalia-activator.php
+msgid "Read"
+msgstr ""
+
+#: includes/class-marginalia-activator.php
+msgid "Did Not Finish"
+msgstr ""
+
+#: includes/class-marginalia-post-type.php
+msgctxt "Post type general name"
+msgid "Books"
+msgstr ""
+
+#: includes/class-marginalia-post-type.php
+msgctxt "Post type singular name"
+msgid "Book"
+msgstr ""
+
+#: includes/class-marginalia-post-type.php
+msgid "Add New"
+msgstr ""
+
+#: includes/class-marginalia-post-type.php
+msgid "Add New Book"
+msgstr ""
+
+#: includes/class-marginalia-post-type.php
+msgid "New Book"
+msgstr ""
+
+#: includes/class-marginalia-post-type.php
+msgid "Edit Book"
+msgstr ""
+
+#: includes/class-marginalia-post-type.php
+msgid "View Book"
+msgstr ""
+
+#: includes/class-marginalia-post-type.php
+msgid "All Books"
+msgstr ""
+
+#: includes/class-marginalia-post-type.php
+msgid "Search Books"
+msgstr ""
+
+#: includes/class-marginalia-post-type.php
+msgid "No books found."
+msgstr ""
+
+#: includes/class-marginalia-post-type.php
+msgid "No books found in Trash."
+msgstr ""
+
+#: includes/class-marginalia-taxonomy.php
+msgctxt "taxonomy general name"
+msgid "Reading Status"
+msgstr ""
+
+#: includes/class-marginalia-taxonomy.php
+msgid "Search Reading Statuses"
+msgstr ""
+
+#: includes/class-marginalia-taxonomy.php
+msgid "All Reading Statuses"
+msgstr ""
+
+#: includes/class-marginalia-taxonomy.php
+msgid "Edit Reading Status"
+msgstr ""
+
+#: includes/class-marginalia-taxonomy.php
+msgid "Update Reading Status"
+msgstr ""
+
+#: includes/class-marginalia-taxonomy.php
+msgid "Add New Reading Status"
+msgstr ""
+
+#: includes/class-marginalia-taxonomy.php
+msgid "New Reading Status Name"
+msgstr ""
+
+#: includes/class-marginalia-meta.php
+msgid "Book author"
+msgstr ""
+
+#: includes/class-marginalia-meta.php
+msgid "ISBN-10"
+msgstr ""
+
+#: includes/class-marginalia-meta.php
+msgid "ISBN-13"
+msgstr ""
+
+#: includes/class-marginalia-meta.php
+msgid "OCLC Number"
+msgstr ""
+
+#: includes/class-marginalia-meta.php
+msgid "Publication date"
+msgstr ""
+
+#: includes/class-marginalia-meta.php
+msgid "Publisher"
+msgstr ""
+
+#: includes/class-marginalia-meta.php
+msgid "OpenLibrary Key"
+msgstr ""
+
+#: includes/class-marginalia-meta.php
+msgid "Number of pages"
+msgstr ""
+
+#: includes/class-marginalia-meta.php
+msgid "Date started reading"
+msgstr ""
+
+#: includes/class-marginalia-meta.php
+msgid "Date finished reading"
+msgstr ""
+
+#: includes/class-marginalia-meta.php
+msgid "Star rating (0-5)"
+msgstr ""
+
+#: admin/class-marginalia-admin.php
+msgid "Searching..."
+msgstr ""
+
+#: admin/class-marginalia-admin.php
+msgid "No results found."
+msgstr ""
+
+#: admin/class-marginalia-admin.php
+msgid "Select"
+msgstr ""
+
+#: admin/class-marginalia-admin.php
+msgid "Loading book details..."
+msgstr ""
+
+#: admin/class-marginalia-admin.php
+msgid "Importing cover image..."
+msgstr ""
+
+#: admin/class-marginalia-admin.php
+msgid "Cover image imported successfully."
+msgstr ""
+
+#: admin/class-marginalia-admin.php
+msgid "Failed to import cover image."
+msgstr ""
+
+#: admin/class-marginalia-admin.php
+msgid "Fields populated from OpenLibrary."
+msgstr ""
+
+#: admin/class-marginalia-admin.php
+msgid "An error occurred."
+msgstr ""
+
+#: admin/class-marginalia-admin.php
+msgid "This will overwrite existing field values. Continue?"
+msgstr ""
+
+#: admin/class-marginalia-admin.php
+msgid "Thank you for installing Marginalia! Start by %s."
+msgstr ""
+
+#: admin/class-marginalia-admin.php
+msgid "adding your first book"
+msgstr ""
+
+#: admin/class-marginalia-admin.php
+msgid "A book with this identifier already exists: \"%1$s\". %2$s"
+msgstr ""
+
+#: admin/class-marginalia-admin.php
+msgid "Edit existing book"
+msgstr ""
+
+#: admin/class-marginalia-meta-box.php
+msgid "OpenLibrary Search"
+msgstr ""
+
+#: admin/class-marginalia-meta-box.php
+msgid "Book Details"
+msgstr ""
+
+#: admin/class-marginalia-meta-box.php
+msgid "Reading Tracking"
+msgstr ""
+
+#: admin/class-marginalia-meta-box.php
+msgid "Search OpenLibrary"
+msgstr ""
+
+#: admin/class-marginalia-meta-box.php
+msgid "Enter ISBN, title, or author..."
+msgstr ""
+
+#: admin/class-marginalia-meta-box.php
+msgid "All Fields"
+msgstr ""
+
+#: admin/class-marginalia-meta-box.php
+msgid "Title"
+msgstr ""
+
+#: admin/class-marginalia-meta-box.php
+msgid "Author"
+msgstr ""
+
+#: admin/class-marginalia-meta-box.php
+msgid "Search"
+msgstr ""
+
+#: admin/class-marginalia-meta-box.php
+msgid "Date Started"
+msgstr ""
+
+#: admin/class-marginalia-meta-box.php
+msgid "Date Finished"
+msgstr ""
+
+#: admin/class-marginalia-meta-box.php
+msgid "Star Rating"
+msgstr ""
+
+#: admin/class-marginalia-meta-box.php
+msgid "Unrated"
+msgstr ""
+
+#: admin/class-marginalia-meta-box.php
+msgid "%d star"
+msgid_plural "%d stars"
+msgstr[0] ""
+msgstr[1] ""
+
+#: admin/class-marginalia-meta-box.php
+msgid "At least one of ISBN-10, ISBN-13, or OpenLibrary Key is required."
+msgstr ""
+
+#: admin/class-marginalia-admin-columns.php
+msgid "Rating"
+msgstr ""
+
+#: admin/class-marginalia-admin-columns.php
+msgid "Date Added"
+msgstr ""
+
+#: admin/class-marginalia-admin-columns.php
+msgid "All Reading Statuses"
+msgstr ""
+
+#: public/class-marginalia-patterns.php
+msgid "Book Lists"
+msgstr ""
+
+#: public/class-marginalia-patterns.php
+msgid "Patterns for displaying book collections and reading lists."
+msgstr ""
+
+#: public/class-marginalia-patterns.php
+msgid "Currently Reading Books"
+msgstr ""
+
+#: public/class-marginalia-patterns.php
+msgid "Books to Read"
+msgstr ""
+
+#: public/class-marginalia-patterns.php
+msgid "Read Books"
+msgstr ""
+
+#: public/class-marginalia-patterns.php
+msgid "Single Book Display"
+msgstr ""
+
+#: public/class-marginalia-patterns.php
+msgid "No books currently being read."
+msgstr ""
+
+#: public/class-marginalia-patterns.php
+msgid "No books in the reading list."
+msgstr ""
+
+#: public/class-marginalia-patterns.php
+msgid "No books read yet."
+msgstr ""
+
+#: public/class-marginalia-patterns.php
+msgid "Books I've Read"
+msgstr ""
+
+#: public/class-marginalia-patterns.php
+msgid "My Review"
+msgstr ""
+
+#: public/class-marginalia-patterns.php
+msgid "Publisher:"
+msgstr ""
+
+#: public/class-marginalia-patterns.php
+msgid "Published:"
+msgstr ""
+
+#: public/class-marginalia-patterns.php
+msgid "Pages:"
+msgstr ""
+
+#: public/class-marginalia-patterns.php
+msgid "Started:"
+msgstr ""
+
+#: public/class-marginalia-patterns.php
+msgid "Finished:"
+msgstr ""
+
+#: includes/class-marginalia-openlibrary.php
+msgid "Permission denied."
+msgstr ""
+
+#: includes/class-marginalia-openlibrary.php
+msgid "Please enter a search query."
+msgstr ""
+
+#: includes/class-marginalia-openlibrary.php
+msgid "OpenLibrary API returned error code: %d"
+msgstr ""
+
+#: includes/class-marginalia-openlibrary.php
+msgid "Invalid book key."
+msgstr ""
+
+#: includes/class-marginalia-openlibrary.php
+msgid "No cover URL provided."
+msgstr ""
