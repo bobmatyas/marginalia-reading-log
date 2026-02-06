@@ -82,8 +82,8 @@ class Marginalia_Admin {
 					'fields_populated'   => __( 'Fields populated from OpenLibrary.', 'marginalia-reading-log' ),
 					'error'              => __( 'An error occurred.', 'marginalia-reading-log' ),
 					'confirm_overwrite'  => __( 'This will overwrite existing field values. Continue?', 'marginalia-reading-log' ),
-					'creating_book'      => __( 'Creating book...', 'marginalia-reading-log' ),
-					'create_book'        => __( 'Create Book', 'marginalia-reading-log' ),
+					'creating_book'      => __( 'Adding book...', 'marginalia-reading-log' ),
+					'create_book'        => __( 'Add Book', 'marginalia-reading-log' ),
 					'edit_book'          => __( 'Edit Book', 'marginalia-reading-log' ),
 					'edit_existing'      => __( 'Edit existing book', 'marginalia-reading-log' ),
 				),
@@ -318,6 +318,12 @@ class Marginalia_Admin {
 									<?php endfor; ?>
 								</span>
 							</p>
+							<p>
+								<label>
+									<input type="checkbox" id="marginalia-modal-private" value="1" />
+									<?php esc_html_e( 'Private (only visible to logged-in users)', 'marginalia-reading-log' ); ?>
+								</label>
+							</p>
 						</div>
 					</div>
 				</div>
@@ -330,7 +336,7 @@ class Marginalia_Admin {
 							<?php esc_html_e( 'Cancel', 'marginalia-reading-log' ); ?>
 						</button>
 						<button type="button" class="button button-primary marginalia-modal-create" style="display: none;">
-							<?php esc_html_e( 'Create Book', 'marginalia-reading-log' ); ?>
+							<?php esc_html_e( 'Add Book', 'marginalia-reading-log' ); ?>
 						</button>
 					</div>
 				</div>
@@ -365,6 +371,7 @@ class Marginalia_Admin {
 			'date_started'     => isset( $_POST['date_started'] ) ? sanitize_text_field( wp_unslash( $_POST['date_started'] ) ) : '',
 			'date_finished'    => isset( $_POST['date_finished'] ) ? sanitize_text_field( wp_unslash( $_POST['date_finished'] ) ) : '',
 			'star_rating'      => isset( $_POST['star_rating'] ) ? absint( $_POST['star_rating'] ) : 0,
+			'post_private'     => isset( $_POST['post_private'] ) ? sanitize_text_field( wp_unslash( $_POST['post_private'] ) ) : '0',
 		);
 
 		// Validate required fields.
@@ -398,7 +405,7 @@ class Marginalia_Admin {
 		$post_data = array(
 			'post_title'  => $book_data['title'],
 			'post_type'   => 'book',
-			'post_status' => 'publish',
+			'post_status' => '1' === $book_data['post_private'] ? 'private' : 'publish',
 		);
 
 		$post_id = wp_insert_post( $post_data, true );

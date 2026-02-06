@@ -39,7 +39,7 @@
 		}, []);
 
 		var selectedTerms = useSelect(function(select) {
-			return select('core/editor').getEditedPostAttribute('reading_status') || [];
+			return select('core/editor').getEditedPostAttribute('reading-status') || [];
 		}, []);
 
 		var editPost = useDispatch('core/editor').editPost;
@@ -73,7 +73,7 @@
 		function onStatusChange(value) {
 			// Convert to array of integers (or empty array).
 			var newTerms = value ? [parseInt(value, 10)] : [];
-			editPost({ reading_status: newTerms });
+			editPost({ 'reading-status': newTerms });
 		}
 
 		return createElement(

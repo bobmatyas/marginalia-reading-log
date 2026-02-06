@@ -109,6 +109,7 @@
 			$('#marginalia-modal-date-started').val('');
 			$('#marginalia-modal-date-finished').val('');
 			$('input[name="marginalia_modal_rating"][value="0"]').prop('checked', true);
+			$('#marginalia-modal-private').prop('checked', false);
 			this.selectedBook = null;
 		},
 
@@ -287,7 +288,8 @@
 				reading_status: $('#marginalia-modal-reading-status').val(),
 				date_started: $('#marginalia-modal-date-started').val(),
 				date_finished: $('#marginalia-modal-date-finished').val(),
-				star_rating: $('input[name="marginalia_modal_rating"]:checked').val()
+				star_rating: $('input[name="marginalia_modal_rating"]:checked').val(),
+				post_private: $('#marginalia-modal-private').is(':checked') ? '1' : '0'
 			};
 
 			$.ajax({
