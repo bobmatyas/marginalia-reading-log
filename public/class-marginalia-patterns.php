@@ -196,6 +196,8 @@ class Marginalia_Patterns {
 <!-- wp:group {"className":"marginalia-book-info","layout":{"type":"constrained"}} -->
 <div class="wp-block-group marginalia-book-info">
 <!-- wp:post-title {"level":3,"isLink":true,"fontSize":"medium"} /-->
+
+<!-- wp:marginalia/star-rating /-->
 </div>
 <!-- /wp:group -->
 </div>
@@ -299,6 +301,8 @@ class Marginalia_Patterns {
 <!-- wp:post-title {"level":1,"className":"marginalia-single-book-title"} /-->
 
 <!-- wp:post-terms {"term":"reading_status","className":"marginalia-reading-status-badge"} /-->
+
+<!-- wp:marginalia/star-rating /-->
 </div>
 <!-- /wp:group -->
 

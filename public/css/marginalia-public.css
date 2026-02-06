@@ -181,6 +181,11 @@
 	color: #721c24;
 }
 
+/* Book Rating (prepended to content) */
+.marginalia-book-rating {
+	margin-bottom: 1rem;
+}
+
 /* Review Section */
 .marginalia-review {
 	margin-top: 2rem;
