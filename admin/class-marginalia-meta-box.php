@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * Meta box functionality.
  *
@@ -271,7 +272,7 @@ class Marginalia_Meta_Box {
 								printf(
 									/* translators: %d: number of stars */
 									esc_html( _n( '%d star', '%d stars', $i, 'marginalia-reading-log' ) ),
-									$i
+									absint( $i )
 								);
 								?>
 							</span>

@@ -1,11 +1,10 @@
 <?php
 /**
  * Plugin Name: Marginalia
- * Plugin URI: https://example.com/marginalia
  * Description: A personal reading log for WordPress. Track books you're reading with reviews, ratings, and reading progress.
  * Version: 1.0.0
- * Author: Your Name
- * Author URI: https://example.com
+ * Author: lastsplash
+ * Author URI: https://bobmatyas.com
  * License: GPL-2.0+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain: marginalia-reading-log
@@ -57,18 +56,6 @@ function marginalia_deactivate() {
 
 register_activation_hook( __FILE__, 'marginalia_activate' );
 register_deactivation_hook( __FILE__, 'marginalia_deactivate' );
-
-/**
- * Load plugin text domain for translations.
- */
-function marginalia_load_textdomain() {
-	load_plugin_textdomain(
-		'marginalia-reading-log',
-		false,
-		dirname( MARGINALIA_PLUGIN_BASENAME ) . '/languages'
-	);
-}
-add_action( 'plugins_loaded', 'marginalia_load_textdomain' );
 
 /**
  * Include required files.

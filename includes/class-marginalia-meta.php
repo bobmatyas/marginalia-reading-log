@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * Post meta registration.
  *
@@ -184,49 +185,48 @@ class Marginalia_Meta {
 	public static function check_duplicate( $isbn_10 = '', $isbn_13 = '', $openlibrary_key = '', $exclude_post_id = 0 ) {
 		global $wpdb;
 
-		$meta_queries = array();
+		$meta_conditions = array();
+		$prepare_args   = array();
 
 		if ( ! empty( $isbn_10 ) ) {
-			$meta_queries[] = $wpdb->prepare(
-				"(pm.meta_key = '_marginalia_isbn_10' AND pm.meta_value = %s)",
-				$isbn_10
-			);
+			$meta_conditions[] = '(pm.meta_key = %s AND pm.meta_value = %s)';
+			$prepare_args[]    = '_marginalia_isbn_10';
+			$prepare_args[]    = $isbn_10;
 		}
 
 		if ( ! empty( $isbn_13 ) ) {
-			$meta_queries[] = $wpdb->prepare(
-				"(pm.meta_key = '_marginalia_isbn_13' AND pm.meta_value = %s)",
-				$isbn_13
-			);
+			$meta_conditions[] = '(pm.meta_key = %s AND pm.meta_value = %s)';
+			$prepare_args[]    = '_marginalia_isbn_13';
+			$prepare_args[]    = $isbn_13;
 		}
 
 		if ( ! empty( $openlibrary_key ) ) {
-			$meta_queries[] = $wpdb->prepare(
-				"(pm.meta_key = '_marginalia_openlibrary_key' AND pm.meta_value = %s)",
-				$openlibrary_key
-			);
+			$meta_conditions[] = '(pm.meta_key = %s AND pm.meta_value = %s)';
+			$prepare_args[]    = '_marginalia_openlibrary_key';
+			$prepare_args[]    = $openlibrary_key;
 		}
 
-		if ( empty( $meta_queries ) ) {
+		if ( empty( $meta_conditions ) ) {
 			return false;
 		}
 
-		$meta_where = implode( ' OR ', $meta_queries );
+		$meta_where = implode( ' OR ', $meta_conditions );
 
-		$exclude_sql = '';
-		if ( $exclude_post_id > 0 ) {
-			$exclude_sql = $wpdb->prepare( ' AND p.ID != %d', $exclude_post_id );
-		}
-
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $meta_where and $exclude_sql are already prepared.
-		$post_id = $wpdb->get_var(
-			"SELECT p.ID FROM {$wpdb->posts} p
+		$sql = "SELECT p.ID FROM {$wpdb->posts} p
 			INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
 			WHERE p.post_type = 'book'
 			AND p.post_status != 'trash'
-			AND ({$meta_where})
-			{$exclude_sql}
-			LIMIT 1"
+			AND ({$meta_where})";
+
+		if ( $exclude_post_id > 0 ) {
+			$sql           .= ' AND p.ID != %d';
+			$prepare_args[] = $exclude_post_id;
+		}
+
+		$sql .= ' LIMIT 1';
+
+		$post_id = $wpdb->get_var(
+			$wpdb->prepare( $sql, $prepare_args ) // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- placeholders are used throughout.
 		);
 
 		return $post_id ? absint( $post_id ) : false;
