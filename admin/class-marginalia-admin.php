@@ -61,7 +61,7 @@ class Marginalia_Admin {
 		wp_enqueue_script(
 			'marginalia-admin-js',
 			MARGINALIA_PLUGIN_URL . 'admin/js/marginalia-admin.js',
-			array( 'jquery', 'wp-util' ),
+			array(),
 			MARGINALIA_VERSION,
 			true
 		);
@@ -241,7 +241,7 @@ class Marginalia_Admin {
 			<div class="marginalia-modal-overlay"></div>
 			<div class="marginalia-modal-container">
 				<div class="marginalia-modal-header">
-					<h2><?php esc_html_e( 'Add Book from OpenLibrary', 'marginalia-reading-log' ); ?></h2>
+					<h2><?php esc_html_e( 'Add Book', 'marginalia-reading-log' ); ?></h2>
 					<button type="button" class="marginalia-modal-close" aria-label="<?php esc_attr_e( 'Close', 'marginalia-reading-log' ); ?>">
 						<span class="dashicons dashicons-no-alt"></span>
 					</button>

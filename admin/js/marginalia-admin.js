@@ -4,9 +4,9 @@
  * @package Marginalia
  */
 
-/* global marginalia, jQuery, wp, ajaxurl */
+/* global marginalia, wp, ajaxurl */
 
-(function($) {
+(function() {
 	'use strict';
 
 	var Marginalia = {
@@ -28,32 +28,72 @@
 		 */
 		bindEvents: function() {
 			// Edit page search.
-			$('#marginalia-search-btn').on('click', this.searchBooks.bind(this));
-			$('#marginalia-search-query').on('keypress', function(e) {
-				if (e.which === 13) {
-					e.preventDefault();
-					this.searchBooks();
+			var searchBtn = document.getElementById('marginalia-search-btn');
+			var searchQuery = document.getElementById('marginalia-search-query');
+
+			if (searchBtn) {
+				searchBtn.addEventListener('click', this.searchBooks.bind(this));
+			}
+
+			if (searchQuery) {
+				searchQuery.addEventListener('keypress', function(e) {
+					if (e.which === 13) {
+						e.preventDefault();
+						this.searchBooks();
+					}
+				}.bind(this));
+			}
+
+			// Delegated events on document.
+			document.addEventListener('click', function(e) {
+				var target;
+
+				if ((target = e.target.closest('.marginalia-select-book'))) {
+					this.selectBook(e, target);
+					return;
+				}
+
+				if ((target = e.target.closest('.marginalia-quick-add-btn'))) {
+					this.openModal(e);
+					return;
+				}
+
+				if ((target = e.target.closest('.marginalia-modal-close, .marginalia-modal-cancel, .marginalia-modal-overlay'))) {
+					this.closeModal();
+					return;
+				}
+
+				if ((target = e.target.closest('#marginalia-modal-search-btn'))) {
+					this.modalSearchBooks();
+					return;
+				}
+
+				if ((target = e.target.closest('.marginalia-modal-select-book'))) {
+					this.modalSelectBook(e, target);
+					return;
+				}
+
+				if ((target = e.target.closest('.marginalia-modal-back'))) {
+					this.modalBackToSearch();
+					return;
+				}
+
+				if ((target = e.target.closest('.marginalia-modal-create'))) {
+					this.modalCreateBook(e, target);
+					return;
 				}
 			}.bind(this));
 
-			$(document).on('click', '.marginalia-select-book', this.selectBook.bind(this));
-
-			// Modal events.
-			$(document).on('click', '.marginalia-quick-add-btn', this.openModal.bind(this));
-			$(document).on('click', '.marginalia-modal-close, .marginalia-modal-cancel, .marginalia-modal-overlay', this.closeModal.bind(this));
-			$(document).on('click', '#marginalia-modal-search-btn', this.modalSearchBooks.bind(this));
-			$(document).on('keypress', '#marginalia-modal-search-query', function(e) {
-				if (e.which === 13) {
+			// Modal search keypress.
+			document.addEventListener('keypress', function(e) {
+				if (e.target.id === 'marginalia-modal-search-query' && e.which === 13) {
 					e.preventDefault();
 					this.modalSearchBooks();
 				}
 			}.bind(this));
-			$(document).on('click', '.marginalia-modal-select-book', this.modalSelectBook.bind(this));
-			$(document).on('click', '.marginalia-modal-back', this.modalBackToSearch.bind(this));
-			$(document).on('click', '.marginalia-modal-create', this.modalCreateBook.bind(this));
 
 			// Close modal on escape key.
-			$(document).on('keydown', function(e) {
+			document.addEventListener('keydown', function(e) {
 				if (e.which === 27) {
 					this.closeModal();
 				}
@@ -64,10 +104,13 @@
 		 * Initialize quick add button on books list page.
 		 */
 		initQuickAddButton: function() {
-			var $template = $('#tmpl-marginalia-quick-add-button');
-			if ($template.length) {
-				var buttonHtml = $template.html();
-				$('.page-title-action').first().after(buttonHtml);
+			var template = document.getElementById('tmpl-marginalia-quick-add-button');
+			if (template) {
+				var buttonHtml = template.innerHTML;
+				var pageTitleAction = document.querySelector('.page-title-action');
+				if (pageTitleAction) {
+					pageTitleAction.insertAdjacentHTML('afterend', buttonHtml);
+				}
 			}
 		},
 
@@ -80,17 +123,26 @@
 			e.preventDefault();
 			this.selectedBook = null;
 			this.resetModal();
-			$('#marginalia-quick-add-modal').show();
-			$('#marginalia-modal-search-query').focus();
-			$('body').addClass('marginalia-modal-open');
+			var modal = document.getElementById('marginalia-quick-add-modal');
+			if (modal) {
+				modal.style.display = '';
+			}
+			var searchInput = document.getElementById('marginalia-modal-search-query');
+			if (searchInput) {
+				searchInput.focus();
+			}
+			document.body.classList.add('marginalia-modal-open');
 		},
 
 		/**
 		 * Close the quick add modal.
 		 */
 		closeModal: function() {
-			$('#marginalia-quick-add-modal').hide();
-			$('body').removeClass('marginalia-modal-open');
+			var modal = document.getElementById('marginalia-quick-add-modal');
+			if (modal) {
+				modal.style.display = 'none';
+			}
+			document.body.classList.remove('marginalia-modal-open');
 			this.resetModal();
 		},
 
@@ -98,18 +150,67 @@
 		 * Reset modal to initial state.
 		 */
 		resetModal: function() {
-			$('#marginalia-modal-search-query').val('');
-			$('#marginalia-modal-search-results').empty();
-			$('#marginalia-modal-search-status').hide().text('');
-			$('.marginalia-modal-search').show();
-			$('.marginalia-modal-book-details').hide();
-			$('.marginalia-modal-back').hide();
-			$('.marginalia-modal-create').hide();
-			$('#marginalia-modal-reading-status').val('');
-			$('#marginalia-modal-date-started').val('');
-			$('#marginalia-modal-date-finished').val('');
-			$('input[name="marginalia_modal_rating"][value="0"]').prop('checked', true);
-			$('#marginalia-modal-private').prop('checked', false);
+			var searchQuery = document.getElementById('marginalia-modal-search-query');
+			if (searchQuery) {
+				searchQuery.value = '';
+			}
+
+			var searchResults = document.getElementById('marginalia-modal-search-results');
+			if (searchResults) {
+				searchResults.innerHTML = '';
+			}
+
+			var searchStatus = document.getElementById('marginalia-modal-search-status');
+			if (searchStatus) {
+				searchStatus.style.display = 'none';
+				searchStatus.textContent = '';
+			}
+
+			var modalSearch = document.querySelector('.marginalia-modal-search');
+			if (modalSearch) {
+				modalSearch.style.display = '';
+			}
+
+			var bookDetails = document.querySelector('.marginalia-modal-book-details');
+			if (bookDetails) {
+				bookDetails.style.display = 'none';
+			}
+
+			var backBtn = document.querySelector('.marginalia-modal-back');
+			if (backBtn) {
+				backBtn.style.display = 'none';
+			}
+
+			var createBtn = document.querySelector('.marginalia-modal-create');
+			if (createBtn) {
+				createBtn.style.display = 'none';
+			}
+
+			var readingStatus = document.getElementById('marginalia-modal-reading-status');
+			if (readingStatus) {
+				readingStatus.value = '';
+			}
+
+			var dateStarted = document.getElementById('marginalia-modal-date-started');
+			if (dateStarted) {
+				dateStarted.value = '';
+			}
+
+			var dateFinished = document.getElementById('marginalia-modal-date-finished');
+			if (dateFinished) {
+				dateFinished.value = '';
+			}
+
+			var ratingZero = document.querySelector('input[name="marginalia_modal_rating"][value="0"]');
+			if (ratingZero) {
+				ratingZero.checked = true;
+			}
+
+			var privateCheckbox = document.getElementById('marginalia-modal-private');
+			if (privateCheckbox) {
+				privateCheckbox.checked = false;
+			}
+
 			this.selectedBook = null;
 		},
 
@@ -117,8 +218,10 @@
 		 * Search books from modal.
 		 */
 		modalSearchBooks: function() {
-			var query = $('#marginalia-modal-search-query').val().trim();
-			var type = $('#marginalia-modal-search-type').val();
+			var queryEl = document.getElementById('marginalia-modal-search-query');
+			var typeEl = document.getElementById('marginalia-modal-search-type');
+			var query = queryEl ? queryEl.value.trim() : '';
+			var type = typeEl ? typeEl.value : '';
 
 			if (!query) {
 				this.showModalStatus(marginalia.strings.error, 'error');
@@ -126,29 +229,34 @@
 			}
 
 			this.showModalStatus(marginalia.strings.searching, 'loading');
-			$('#marginalia-modal-search-results').empty();
+			var searchResults = document.getElementById('marginalia-modal-search-results');
+			if (searchResults) {
+				searchResults.innerHTML = '';
+			}
 
-			$.ajax({
-				url: marginalia.ajax_url,
-				type: 'POST',
-				data: {
-					action: 'marginalia_search_books',
-					nonce: marginalia.nonce,
-					query: query,
-					type: type
-				},
-				success: function(response) {
-					if (response.success && response.data.length > 0) {
-						this.displayModalResults(response.data);
-						this.showModalStatus('');
-					} else {
-						this.showModalStatus(marginalia.strings.no_results, 'error');
-					}
-				}.bind(this),
-				error: function() {
-					this.showModalStatus(marginalia.strings.error, 'error');
-				}.bind(this)
-			});
+			var params = new URLSearchParams();
+			params.append('action', 'marginalia_search_books');
+			params.append('nonce', marginalia.nonce);
+			params.append('query', query);
+			params.append('type', type);
+
+			fetch(marginalia.ajax_url, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+				body: params.toString()
+			})
+			.then(function(response) { return response.json(); })
+			.then(function(response) {
+				if (response.success && response.data.length > 0) {
+					this.displayModalResults(response.data);
+					this.showModalStatus('');
+				} else {
+					this.showModalStatus(marginalia.strings.no_results, 'error');
+				}
+			}.bind(this))
+			.catch(function() {
+				this.showModalStatus(marginalia.strings.error, 'error');
+			}.bind(this));
 		},
 
 		/**
@@ -157,14 +265,17 @@
 		 * @param {Array} results Search results.
 		 */
 		displayModalResults: function(results) {
-			var $container = $('#marginalia-modal-search-results');
-			$container.empty();
+			var container = document.getElementById('marginalia-modal-search-results');
+			if (!container) {
+				return;
+			}
+			container.innerHTML = '';
 
 			results.forEach(function(book) {
 				var coverUrl = book.cover_url || marginalia.placeholder_cover;
 				var authors = book.authors ? book.authors.join(', ') : book.author || '';
 
-				var $result = $('<div class="marginalia-search-result">' +
+				var html = '<div class="marginalia-search-result">' +
 					'<img class="marginalia-search-result-cover" src="' + this.escapeHtml(coverUrl) + '" alt="" />' +
 					'<div class="marginalia-search-result-info">' +
 						'<p class="marginalia-search-result-title">' + this.escapeHtml(book.title) + '</p>' +
@@ -177,47 +288,52 @@
 							marginalia.strings.select_book +
 						'</button>' +
 					'</div>' +
-				'</div>');
+				'</div>';
 
-				$container.append($result);
+				container.insertAdjacentHTML('beforeend', html);
 			}.bind(this));
 		},
 
 		/**
 		 * Select a book in the modal.
 		 *
-		 * @param {Event} e Click event.
+		 * @param {Event}   e      Click event.
+		 * @param {Element} button The clicked button element.
 		 */
-		modalSelectBook: function(e) {
+		modalSelectBook: function(e, button) {
 			e.preventDefault();
 
-			var $button = $(e.currentTarget);
-			var key = $button.data('key');
+			var key = button.dataset.key;
 
-			$button.prop('disabled', true).text(marginalia.strings.loading_details);
+			button.disabled = true;
+			button.textContent = marginalia.strings.loading_details;
 
-			$.ajax({
-				url: marginalia.ajax_url,
-				type: 'POST',
-				data: {
-					action: 'marginalia_get_book_details',
-					nonce: marginalia.nonce,
-					key: key
-				},
-				success: function(response) {
-					if (response.success) {
-						this.selectedBook = response.data;
-						this.showModalBookDetails(response.data);
-					} else {
-						this.showModalStatus(response.data.message || marginalia.strings.error, 'error');
-						$button.prop('disabled', false).text(marginalia.strings.select_book);
-					}
-				}.bind(this),
-				error: function() {
-					this.showModalStatus(marginalia.strings.error, 'error');
-					$button.prop('disabled', false).text(marginalia.strings.select_book);
-				}.bind(this)
-			});
+			var params = new URLSearchParams();
+			params.append('action', 'marginalia_get_book_details');
+			params.append('nonce', marginalia.nonce);
+			params.append('key', key);
+
+			fetch(marginalia.ajax_url, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+				body: params.toString()
+			})
+			.then(function(response) { return response.json(); })
+			.then(function(response) {
+				if (response.success) {
+					this.selectedBook = response.data;
+					this.showModalBookDetails(response.data);
+				} else {
+					this.showModalStatus(response.data.message || marginalia.strings.error, 'error');
+					button.disabled = false;
+					button.textContent = marginalia.strings.select_book;
+				}
+			}.bind(this))
+			.catch(function() {
+				this.showModalStatus(marginalia.strings.error, 'error');
+				button.disabled = false;
+				button.textContent = marginalia.strings.select_book;
+			}.bind(this));
 		},
 
 		/**
@@ -228,9 +344,20 @@
 		showModalBookDetails: function(book) {
 			var coverUrl = book.cover_url_large || book.cover_url_medium || marginalia.placeholder_cover;
 
-			$('#marginalia-modal-book-cover').attr('src', coverUrl);
-			$('#marginalia-modal-book-title').text(book.title);
-			$('#marginalia-modal-book-author').text(book.author || '');
+			var coverImg = document.getElementById('marginalia-modal-book-cover');
+			if (coverImg) {
+				coverImg.src = coverUrl;
+			}
+
+			var titleEl = document.getElementById('marginalia-modal-book-title');
+			if (titleEl) {
+				titleEl.textContent = book.title;
+			}
+
+			var authorEl = document.getElementById('marginalia-modal-book-author');
+			if (authorEl) {
+				authorEl.textContent = book.author || '';
+			}
 
 			var meta = [];
 			if (book.publisher) {
@@ -242,80 +369,126 @@
 			if (book.page_count) {
 				meta.push(book.page_count + ' pages');
 			}
-			$('#marginalia-modal-book-meta').text(meta.join(' • '));
 
-			$('.marginalia-modal-search').hide();
-			$('.marginalia-modal-book-details').show();
-			$('.marginalia-modal-back').show();
-			$('.marginalia-modal-create').show();
+			var metaEl = document.getElementById('marginalia-modal-book-meta');
+			if (metaEl) {
+				metaEl.textContent = meta.join(' • ');
+			}
+
+			var modalSearch = document.querySelector('.marginalia-modal-search');
+			if (modalSearch) {
+				modalSearch.style.display = 'none';
+			}
+
+			var bookDetailsEl = document.querySelector('.marginalia-modal-book-details');
+			if (bookDetailsEl) {
+				bookDetailsEl.style.display = '';
+			}
+
+			var backBtn = document.querySelector('.marginalia-modal-back');
+			if (backBtn) {
+				backBtn.style.display = '';
+			}
+
+			var createBtn = document.querySelector('.marginalia-modal-create');
+			if (createBtn) {
+				createBtn.style.display = '';
+			}
 		},
 
 		/**
 		 * Go back to search from book details.
 		 */
 		modalBackToSearch: function() {
-			$('.marginalia-modal-book-details').hide();
-			$('.marginalia-modal-search').show();
-			$('.marginalia-modal-back').hide();
-			$('.marginalia-modal-create').hide();
+			var bookDetails = document.querySelector('.marginalia-modal-book-details');
+			if (bookDetails) {
+				bookDetails.style.display = 'none';
+			}
+
+			var modalSearch = document.querySelector('.marginalia-modal-search');
+			if (modalSearch) {
+				modalSearch.style.display = '';
+			}
+
+			var backBtn = document.querySelector('.marginalia-modal-back');
+			if (backBtn) {
+				backBtn.style.display = 'none';
+			}
+
+			var createBtn = document.querySelector('.marginalia-modal-create');
+			if (createBtn) {
+				createBtn.style.display = 'none';
+			}
+
 			this.selectedBook = null;
 		},
 
 		/**
 		 * Create book from modal.
+		 *
+		 * @param {Event}   e         Click event.
+		 * @param {Element} createBtn The clicked button element.
 		 */
-		modalCreateBook: function() {
+		modalCreateBook: function(e, createBtn) {
 			if (!this.selectedBook) {
 				return;
 			}
 
-			var $createBtn = $('.marginalia-modal-create');
-			$createBtn.prop('disabled', true).text(marginalia.strings.creating_book);
+			createBtn.disabled = true;
+			createBtn.textContent = marginalia.strings.creating_book;
 
-			var data = {
-				action: 'marginalia_quick_add_book',
-				nonce: marginalia.nonce,
-				title: this.selectedBook.title,
-				author: this.selectedBook.author,
-				isbn_10: this.selectedBook.isbn_10,
-				isbn_13: this.selectedBook.isbn_13,
-				oclc: this.selectedBook.oclc,
-				publisher: this.selectedBook.publisher,
-				publication_date: this.selectedBook.publication_date,
-				page_count: this.selectedBook.page_count,
-				openlibrary_key: this.selectedBook.key,
-				cover_url: this.selectedBook.cover_url_large || this.selectedBook.cover_url_medium || '',
-				reading_status: $('#marginalia-modal-reading-status').val(),
-				date_started: $('#marginalia-modal-date-started').val(),
-				date_finished: $('#marginalia-modal-date-finished').val(),
-				star_rating: $('input[name="marginalia_modal_rating"]:checked').val(),
-				post_private: $('#marginalia-modal-private').is(':checked') ? '1' : '0'
-			};
+			var ratingEl = document.querySelector('input[name="marginalia_modal_rating"]:checked');
+			var readingStatusEl = document.getElementById('marginalia-modal-reading-status');
+			var dateStartedEl = document.getElementById('marginalia-modal-date-started');
+			var dateFinishedEl = document.getElementById('marginalia-modal-date-finished');
+			var privateEl = document.getElementById('marginalia-modal-private');
 
-			$.ajax({
-				url: marginalia.ajax_url,
-				type: 'POST',
-				data: data,
-				success: function(response) {
-					if (response.success) {
-						this.closeModal();
-						this.showSuccessNotice(response.data.message, response.data.edit_url);
-						// Reload the page to show the new book.
-						window.location.reload();
-					} else {
-						var errorMsg = response.data.message || marginalia.strings.error;
-						if (response.data.duplicate_id) {
-							errorMsg += ' <a href="' + response.data.edit_url + '">' + marginalia.strings.edit_existing + '</a>';
-						}
-						this.showModalStatus(errorMsg, 'error');
-						$createBtn.prop('disabled', false).text(marginalia.strings.create_book);
+			var params = new URLSearchParams();
+			params.append('action', 'marginalia_quick_add_book');
+			params.append('nonce', marginalia.nonce);
+			params.append('title', this.selectedBook.title);
+			params.append('author', this.selectedBook.author);
+			params.append('isbn_10', this.selectedBook.isbn_10);
+			params.append('isbn_13', this.selectedBook.isbn_13);
+			params.append('oclc', this.selectedBook.oclc);
+			params.append('publisher', this.selectedBook.publisher);
+			params.append('publication_date', this.selectedBook.publication_date);
+			params.append('page_count', this.selectedBook.page_count);
+			params.append('openlibrary_key', this.selectedBook.key);
+			params.append('cover_url', this.selectedBook.cover_url_large || this.selectedBook.cover_url_medium || '');
+			params.append('reading_status', readingStatusEl ? readingStatusEl.value : '');
+			params.append('date_started', dateStartedEl ? dateStartedEl.value : '');
+			params.append('date_finished', dateFinishedEl ? dateFinishedEl.value : '');
+			params.append('star_rating', ratingEl ? ratingEl.value : '0');
+			params.append('post_private', privateEl && privateEl.checked ? '1' : '0');
+
+			fetch(marginalia.ajax_url, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+				body: params.toString()
+			})
+			.then(function(response) { return response.json(); })
+			.then(function(response) {
+				if (response.success) {
+					this.closeModal();
+					this.showSuccessNotice(response.data.message, response.data.edit_url);
+					// Reload the page to show the new book.
+					window.location.reload();
+				} else {
+					var errorMsg = response.data.message || marginalia.strings.error;
+					if (response.data.duplicate_id) {
+						errorMsg += ' <a href="' + response.data.edit_url + '">' + marginalia.strings.edit_existing + '</a>';
 					}
-				}.bind(this),
-				error: function() {
-					this.showModalStatus(marginalia.strings.error, 'error');
-					$createBtn.prop('disabled', false).text(marginalia.strings.create_book);
-				}.bind(this)
-			});
+					this.showModalStatus(errorMsg, 'error');
+					createBtn.disabled = false;
+					createBtn.textContent = marginalia.strings.create_book;
+				}
+			}.bind(this))
+			.catch(function() {
+				this.showModalStatus(marginalia.strings.error, 'error');
+				createBtn.disabled = false;
+				createBtn.textContent = marginalia.strings.create_book;
+			}.bind(this));
 		},
 
 		/**
@@ -325,14 +498,21 @@
 		 * @param {string} type    Message type.
 		 */
 		showModalStatus: function(message, type) {
-			var $status = $('#marginalia-modal-search-status');
+			var status = document.getElementById('marginalia-modal-search-status');
+			if (!status) {
+				return;
+			}
 
-			$status.removeClass('loading success error');
+			status.classList.remove('loading', 'success', 'error');
 
 			if (message) {
-				$status.addClass(type || '').html(message).show();
+				if (type) {
+					status.classList.add(type);
+				}
+				status.innerHTML = message;
+				status.style.display = '';
 			} else {
-				$status.hide();
+				status.style.display = 'none';
 			}
 		},
 
@@ -343,20 +523,25 @@
 		 * @param {string} editUrl  URL to edit the book.
 		 */
 		showSuccessNotice: function(message, editUrl) {
-			var $notice = $('<div class="notice notice-success is-dismissible"><p>' +
+			var html = '<div class="notice notice-success is-dismissible"><p>' +
 				this.escapeHtml(message) +
 				' <a href="' + editUrl + '">' + marginalia.strings.edit_book + '</a>' +
-				'</p></div>');
+				'</p></div>';
 
-			$('.wrap > h1').after($notice);
+			var heading = document.querySelector('.wrap > h1');
+			if (heading) {
+				heading.insertAdjacentHTML('afterend', html);
+			}
 		},
 
 		/**
 		 * Search OpenLibrary for books (edit page).
 		 */
 		searchBooks: function() {
-			var query = $('#marginalia-search-query').val().trim();
-			var type = $('#marginalia-search-type').val();
+			var queryEl = document.getElementById('marginalia-search-query');
+			var typeEl = document.getElementById('marginalia-search-type');
+			var query = queryEl ? queryEl.value.trim() : '';
+			var type = typeEl ? typeEl.value : '';
 
 			if (!query) {
 				this.showStatus(marginalia.strings.error, 'error');
@@ -364,29 +549,34 @@
 			}
 
 			this.showStatus(marginalia.strings.searching, 'loading');
-			$('#marginalia-search-results').empty();
+			var searchResults = document.getElementById('marginalia-search-results');
+			if (searchResults) {
+				searchResults.innerHTML = '';
+			}
 
-			$.ajax({
-				url: marginalia.ajax_url,
-				type: 'POST',
-				data: {
-					action: 'marginalia_search_books',
-					nonce: marginalia.nonce,
-					query: query,
-					type: type
-				},
-				success: function(response) {
-					if (response.success && response.data.length > 0) {
-						this.displayResults(response.data);
-						this.showStatus('');
-					} else {
-						this.showStatus(marginalia.strings.no_results, 'error');
-					}
-				}.bind(this),
-				error: function() {
-					this.showStatus(marginalia.strings.error, 'error');
-				}.bind(this)
-			});
+			var params = new URLSearchParams();
+			params.append('action', 'marginalia_search_books');
+			params.append('nonce', marginalia.nonce);
+			params.append('query', query);
+			params.append('type', type);
+
+			fetch(marginalia.ajax_url, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+				body: params.toString()
+			})
+			.then(function(response) { return response.json(); })
+			.then(function(response) {
+				if (response.success && response.data.length > 0) {
+					this.displayResults(response.data);
+					this.showStatus('');
+				} else {
+					this.showStatus(marginalia.strings.no_results, 'error');
+				}
+			}.bind(this))
+			.catch(function() {
+				this.showStatus(marginalia.strings.error, 'error');
+			}.bind(this));
 		},
 
 		/**
@@ -395,14 +585,17 @@
 		 * @param {Array} results Search results.
 		 */
 		displayResults: function(results) {
-			var $container = $('#marginalia-search-results');
-			$container.empty();
+			var container = document.getElementById('marginalia-search-results');
+			if (!container) {
+				return;
+			}
+			container.innerHTML = '';
 
 			results.forEach(function(book) {
 				var coverUrl = book.cover_url || marginalia.placeholder_cover;
 				var authors = book.authors ? book.authors.join(', ') : book.author || '';
 
-				var $result = $('<div class="marginalia-search-result">' +
+				var html = '<div class="marginalia-search-result">' +
 					'<img class="marginalia-search-result-cover" src="' + this.escapeHtml(coverUrl) + '" alt="" />' +
 					'<div class="marginalia-search-result-info">' +
 						'<p class="marginalia-search-result-title">' + this.escapeHtml(book.title) + '</p>' +
@@ -415,22 +608,22 @@
 							marginalia.strings.select_book +
 						'</button>' +
 					'</div>' +
-				'</div>');
+				'</div>';
 
-				$container.append($result);
+				container.insertAdjacentHTML('beforeend', html);
 			}.bind(this));
 		},
 
 		/**
 		 * Select a book and populate fields (edit page).
 		 *
-		 * @param {Event} e Click event.
+		 * @param {Event}   e      Click event.
+		 * @param {Element} button The clicked button element.
 		 */
-		selectBook: function(e) {
+		selectBook: function(e, button) {
 			e.preventDefault();
 
-			var $button = $(e.currentTarget);
-			var key = $button.data('key');
+			var key = button.dataset.key;
 
 			// Check if fields have values.
 			var hasValues = this.fieldsHaveValues();
@@ -438,31 +631,35 @@
 				return;
 			}
 
-			$button.prop('disabled', true).text(marginalia.strings.loading_details);
+			button.disabled = true;
+			button.textContent = marginalia.strings.loading_details;
 
-			$.ajax({
-				url: marginalia.ajax_url,
-				type: 'POST',
-				data: {
-					action: 'marginalia_get_book_details',
-					nonce: marginalia.nonce,
-					key: key
-				},
-				success: function(response) {
-					if (response.success) {
-						this.populateFields(response.data);
-						this.showStatus(marginalia.strings.fields_populated, 'success');
-					} else {
-						this.showStatus(response.data.message || marginalia.strings.error, 'error');
-					}
-				}.bind(this),
-				error: function() {
-					this.showStatus(marginalia.strings.error, 'error');
-				}.bind(this),
-				complete: function() {
-					$button.prop('disabled', false).text(marginalia.strings.select_book);
+			var params = new URLSearchParams();
+			params.append('action', 'marginalia_get_book_details');
+			params.append('nonce', marginalia.nonce);
+			params.append('key', key);
+
+			fetch(marginalia.ajax_url, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+				body: params.toString()
+			})
+			.then(function(response) { return response.json(); })
+			.then(function(response) {
+				if (response.success) {
+					this.populateFields(response.data);
+					this.showStatus(marginalia.strings.fields_populated, 'success');
+				} else {
+					this.showStatus(response.data.message || marginalia.strings.error, 'error');
 				}
-			});
+				button.disabled = false;
+				button.textContent = marginalia.strings.select_book;
+			}.bind(this))
+			.catch(function() {
+				this.showStatus(marginalia.strings.error, 'error');
+				button.disabled = false;
+				button.textContent = marginalia.strings.select_book;
+			}.bind(this));
 		},
 
 		/**
@@ -493,7 +690,8 @@
 			];
 
 			for (var i = 0; i < fields.length; i++) {
-				if ($(fields[i]).val() && $(fields[i]).val().trim()) {
+				var el = document.querySelector(fields[i]);
+				if (el && el.value && el.value.trim()) {
 					return true;
 				}
 			}
@@ -513,36 +711,24 @@
 			}
 
 			// Populate meta fields.
-			if (data.author) {
-				$('#marginalia-author').val(data.author);
-			}
+			var fieldMap = {
+				'author': 'marginalia-author',
+				'isbn_10': 'marginalia-isbn-10',
+				'isbn_13': 'marginalia-isbn-13',
+				'oclc': 'marginalia-oclc',
+				'publisher': 'marginalia-publisher',
+				'publication_date': 'marginalia-publication-date',
+				'page_count': 'marginalia-page-count',
+				'key': 'marginalia-openlibrary-key'
+			};
 
-			if (data.isbn_10) {
-				$('#marginalia-isbn-10').val(data.isbn_10);
-			}
-
-			if (data.isbn_13) {
-				$('#marginalia-isbn-13').val(data.isbn_13);
-			}
-
-			if (data.oclc) {
-				$('#marginalia-oclc').val(data.oclc);
-			}
-
-			if (data.publisher) {
-				$('#marginalia-publisher').val(data.publisher);
-			}
-
-			if (data.publication_date) {
-				$('#marginalia-publication-date').val(data.publication_date);
-			}
-
-			if (data.page_count) {
-				$('#marginalia-page-count').val(data.page_count);
-			}
-
-			if (data.key) {
-				$('#marginalia-openlibrary-key').val(data.key);
+			for (var dataKey in fieldMap) {
+				if (data[dataKey]) {
+					var el = document.getElementById(fieldMap[dataKey]);
+					if (el) {
+						el.value = data[dataKey];
+					}
+				}
 			}
 
 			// Import cover image if available.
@@ -560,34 +746,37 @@
 		importCoverImage: function(coverUrl, title) {
 			this.showStatus(marginalia.strings.importing_cover, 'loading');
 
-			var postId = $('#post_ID').val() || 0;
+			var postIdEl = document.getElementById('post_ID');
+			var postId = postIdEl ? postIdEl.value : 0;
 
-			$.ajax({
-				url: marginalia.ajax_url,
-				type: 'POST',
-				data: {
-					action: 'marginalia_import_cover',
-					nonce: marginalia.nonce,
-					cover_url: coverUrl,
-					post_id: postId,
-					title: title
-				},
-				success: function(response) {
-					if (response.success) {
-						this.showStatus(marginalia.strings.cover_imported, 'success');
+			var params = new URLSearchParams();
+			params.append('action', 'marginalia_import_cover');
+			params.append('nonce', marginalia.nonce);
+			params.append('cover_url', coverUrl);
+			params.append('post_id', postId);
+			params.append('title', title);
 
-						// Update featured image in editor.
-						if (response.data.attachment_id && typeof wp !== 'undefined' && wp.media) {
-							this.setFeaturedImage(response.data.attachment_id);
-						}
-					} else {
-						this.showStatus(response.data.message || marginalia.strings.cover_import_error, 'error');
+			fetch(marginalia.ajax_url, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+				body: params.toString()
+			})
+			.then(function(response) { return response.json(); })
+			.then(function(response) {
+				if (response.success) {
+					this.showStatus(marginalia.strings.cover_imported, 'success');
+
+					// Update featured image in editor.
+					if (response.data.attachment_id && typeof wp !== 'undefined' && wp.media) {
+						this.setFeaturedImage(response.data.attachment_id);
 					}
-				}.bind(this),
-				error: function() {
-					this.showStatus(marginalia.strings.cover_import_error, 'error');
-				}.bind(this)
-			});
+				} else {
+					this.showStatus(response.data.message || marginalia.strings.cover_import_error, 'error');
+				}
+			}.bind(this))
+			.catch(function() {
+				this.showStatus(marginalia.strings.cover_import_error, 'error');
+			}.bind(this));
 		},
 
 		/**
@@ -609,9 +798,11 @@
 			}
 
 			// For classic editor.
-			var $title = $('#title');
-			if ($title.length) {
-				$title.val(title).trigger('input').trigger('blur');
+			var titleEl = document.getElementById('title');
+			if (titleEl) {
+				titleEl.value = title;
+				titleEl.dispatchEvent(new Event('input'));
+				titleEl.dispatchEvent(new Event('blur'));
 			}
 		},
 
@@ -634,16 +825,29 @@
 			}
 
 			// Refresh the featured image metabox.
-			var $metabox = $('#postimagediv');
-			if ($metabox.length) {
-				$.post(ajaxurl, {
-					action: 'get-post-thumbnail-html',
-					post_id: $('#post_ID').val(),
-					thumbnail_id: attachmentId,
-					_wpnonce: $('#_wpnonce').val()
-				}, function(response) {
-					if (response && response !== '0') {
-						$('.inside', $metabox).html(response);
+			var metabox = document.getElementById('postimagediv');
+			if (metabox) {
+				var postIdEl = document.getElementById('post_ID');
+				var nonceEl = document.getElementById('_wpnonce');
+
+				var params = new URLSearchParams();
+				params.append('action', 'get-post-thumbnail-html');
+				params.append('post_id', postIdEl ? postIdEl.value : '');
+				params.append('thumbnail_id', attachmentId);
+				params.append('_wpnonce', nonceEl ? nonceEl.value : '');
+
+				fetch(ajaxurl, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+					body: params.toString()
+				})
+				.then(function(response) { return response.text(); })
+				.then(function(responseText) {
+					if (responseText && responseText !== '0') {
+						var inside = metabox.querySelector('.inside');
+						if (inside) {
+							inside.innerHTML = responseText;
+						}
 					}
 				});
 			}
@@ -656,14 +860,21 @@
 		 * @param {string} type    Message type (loading, success, error).
 		 */
 		showStatus: function(message, type) {
-			var $status = $('#marginalia-search-status');
+			var status = document.getElementById('marginalia-search-status');
+			if (!status) {
+				return;
+			}
 
-			$status.removeClass('loading success error');
+			status.classList.remove('loading', 'success', 'error');
 
 			if (message) {
-				$status.addClass(type || '').text(message).show();
+				if (type) {
+					status.classList.add(type);
+				}
+				status.textContent = message;
+				status.style.display = '';
 			} else {
-				$status.hide();
+				status.style.display = 'none';
 			}
 		},
 
@@ -693,8 +904,8 @@
 	};
 
 	// Initialize on document ready.
-	$(document).ready(function() {
+	document.addEventListener('DOMContentLoaded', function() {
 		Marginalia.init();
 	});
 
-})(jQuery);
+})();
