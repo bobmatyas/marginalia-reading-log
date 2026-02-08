@@ -9,7 +9,7 @@
 (function() {
 	'use strict';
 
-	var Marginalia = {
+	const Marginalia = {
 		/**
 		 * Currently selected book data for modal.
 		 */
@@ -28,8 +28,8 @@
 		 */
 		bindEvents: function() {
 			// Edit page search.
-			var searchBtn = document.getElementById('marginalia-search-btn');
-			var searchQuery = document.getElementById('marginalia-search-query');
+			const searchBtn = document.getElementById('marginalia-search-btn');
+			const searchQuery = document.getElementById('marginalia-search-query');
 
 			if (searchBtn) {
 				searchBtn.addEventListener('click', this.searchBooks.bind(this));
@@ -46,7 +46,7 @@
 
 			// Delegated events on document.
 			document.addEventListener('click', function(e) {
-				var target;
+				let target;
 
 				if ((target = e.target.closest('.marginalia-select-book'))) {
 					this.selectBook(e, target);
@@ -104,10 +104,10 @@
 		 * Initialize quick add button on books list page.
 		 */
 		initQuickAddButton: function() {
-			var template = document.getElementById('tmpl-marginalia-quick-add-button');
+			const template = document.getElementById('tmpl-marginalia-quick-add-button');
 			if (template) {
-				var buttonHtml = template.innerHTML;
-				var pageTitleAction = document.querySelector('.page-title-action');
+				const buttonHtml = template.innerHTML;
+				const pageTitleAction = document.querySelector('.page-title-action');
 				if (pageTitleAction) {
 					pageTitleAction.insertAdjacentHTML('afterend', buttonHtml);
 				}
@@ -123,11 +123,11 @@
 			e.preventDefault();
 			this.selectedBook = null;
 			this.resetModal();
-			var modal = document.getElementById('marginalia-quick-add-modal');
+			const modal = document.getElementById('marginalia-quick-add-modal');
 			if (modal) {
 				modal.style.display = '';
 			}
-			var searchInput = document.getElementById('marginalia-modal-search-query');
+			const searchInput = document.getElementById('marginalia-modal-search-query');
 			if (searchInput) {
 				searchInput.focus();
 			}
@@ -138,7 +138,7 @@
 		 * Close the quick add modal.
 		 */
 		closeModal: function() {
-			var modal = document.getElementById('marginalia-quick-add-modal');
+			const modal = document.getElementById('marginalia-quick-add-modal');
 			if (modal) {
 				modal.style.display = 'none';
 			}
@@ -150,63 +150,63 @@
 		 * Reset modal to initial state.
 		 */
 		resetModal: function() {
-			var searchQuery = document.getElementById('marginalia-modal-search-query');
+			const searchQuery = document.getElementById('marginalia-modal-search-query');
 			if (searchQuery) {
 				searchQuery.value = '';
 			}
 
-			var searchResults = document.getElementById('marginalia-modal-search-results');
+			const searchResults = document.getElementById('marginalia-modal-search-results');
 			if (searchResults) {
 				searchResults.innerHTML = '';
 			}
 
-			var searchStatus = document.getElementById('marginalia-modal-search-status');
+			const searchStatus = document.getElementById('marginalia-modal-search-status');
 			if (searchStatus) {
 				searchStatus.style.display = 'none';
 				searchStatus.textContent = '';
 			}
 
-			var modalSearch = document.querySelector('.marginalia-modal-search');
+			const modalSearch = document.querySelector('.marginalia-modal-search');
 			if (modalSearch) {
 				modalSearch.style.display = '';
 			}
 
-			var bookDetails = document.querySelector('.marginalia-modal-book-details');
+			const bookDetails = document.querySelector('.marginalia-modal-book-details');
 			if (bookDetails) {
 				bookDetails.style.display = 'none';
 			}
 
-			var backBtn = document.querySelector('.marginalia-modal-back');
+			const backBtn = document.querySelector('.marginalia-modal-back');
 			if (backBtn) {
 				backBtn.style.display = 'none';
 			}
 
-			var createBtn = document.querySelector('.marginalia-modal-create');
+			const createBtn = document.querySelector('.marginalia-modal-create');
 			if (createBtn) {
 				createBtn.style.display = 'none';
 			}
 
-			var readingStatus = document.getElementById('marginalia-modal-reading-status');
+			const readingStatus = document.getElementById('marginalia-modal-reading-status');
 			if (readingStatus) {
 				readingStatus.value = '';
 			}
 
-			var dateStarted = document.getElementById('marginalia-modal-date-started');
+			const dateStarted = document.getElementById('marginalia-modal-date-started');
 			if (dateStarted) {
 				dateStarted.value = '';
 			}
 
-			var dateFinished = document.getElementById('marginalia-modal-date-finished');
+			const dateFinished = document.getElementById('marginalia-modal-date-finished');
 			if (dateFinished) {
 				dateFinished.value = '';
 			}
 
-			var ratingZero = document.querySelector('input[name="marginalia_modal_rating"][value="0"]');
+			const ratingZero = document.querySelector('input[name="marginalia_modal_rating"][value="0"]');
 			if (ratingZero) {
 				ratingZero.checked = true;
 			}
 
-			var privateCheckbox = document.getElementById('marginalia-modal-private');
+			const privateCheckbox = document.getElementById('marginalia-modal-private');
 			if (privateCheckbox) {
 				privateCheckbox.checked = false;
 			}
@@ -218,10 +218,10 @@
 		 * Search books from modal.
 		 */
 		modalSearchBooks: function() {
-			var queryEl = document.getElementById('marginalia-modal-search-query');
-			var typeEl = document.getElementById('marginalia-modal-search-type');
-			var query = queryEl ? queryEl.value.trim() : '';
-			var type = typeEl ? typeEl.value : '';
+			const queryEl = document.getElementById('marginalia-modal-search-query');
+			const typeEl = document.getElementById('marginalia-modal-search-type');
+			const query = queryEl ? queryEl.value.trim() : '';
+			const type = typeEl ? typeEl.value : '';
 
 			if (!query) {
 				this.showModalStatus(marginalia.strings.error, 'error');
@@ -229,12 +229,12 @@
 			}
 
 			this.showModalStatus(marginalia.strings.searching, 'loading');
-			var searchResults = document.getElementById('marginalia-modal-search-results');
+			const searchResults = document.getElementById('marginalia-modal-search-results');
 			if (searchResults) {
 				searchResults.innerHTML = '';
 			}
 
-			var params = new URLSearchParams();
+			const params = new URLSearchParams();
 			params.append('action', 'marginalia_search_books');
 			params.append('nonce', marginalia.nonce);
 			params.append('query', query);
@@ -265,17 +265,17 @@
 		 * @param {Array} results Search results.
 		 */
 		displayModalResults: function(results) {
-			var container = document.getElementById('marginalia-modal-search-results');
+			const container = document.getElementById('marginalia-modal-search-results');
 			if (!container) {
 				return;
 			}
 			container.innerHTML = '';
 
 			results.forEach(function(book) {
-				var coverUrl = book.cover_url || marginalia.placeholder_cover;
-				var authors = book.authors ? book.authors.join(', ') : book.author || '';
+				const coverUrl = book.cover_url || marginalia.placeholder_cover;
+				const authors = book.authors ? book.authors.join(', ') : book.author || '';
 
-				var html = '<div class="marginalia-search-result">' +
+				const html = '<div class="marginalia-search-result">' +
 					'<img class="marginalia-search-result-cover" src="' + this.escapeHtml(coverUrl) + '" alt="" />' +
 					'<div class="marginalia-search-result-info">' +
 						'<p class="marginalia-search-result-title">' + this.escapeHtml(book.title) + '</p>' +
@@ -303,12 +303,12 @@
 		modalSelectBook: function(e, button) {
 			e.preventDefault();
 
-			var key = button.dataset.key;
+			const key = button.dataset.key;
 
 			button.disabled = true;
 			button.textContent = marginalia.strings.loading_details;
 
-			var params = new URLSearchParams();
+			const params = new URLSearchParams();
 			params.append('action', 'marginalia_get_book_details');
 			params.append('nonce', marginalia.nonce);
 			params.append('key', key);
@@ -342,24 +342,24 @@
 		 * @param {Object} book Book data.
 		 */
 		showModalBookDetails: function(book) {
-			var coverUrl = book.cover_url_large || book.cover_url_medium || marginalia.placeholder_cover;
+			const coverUrl = book.cover_url_large || book.cover_url_medium || marginalia.placeholder_cover;
 
-			var coverImg = document.getElementById('marginalia-modal-book-cover');
+			const coverImg = document.getElementById('marginalia-modal-book-cover');
 			if (coverImg) {
 				coverImg.src = coverUrl;
 			}
 
-			var titleEl = document.getElementById('marginalia-modal-book-title');
+			const titleEl = document.getElementById('marginalia-modal-book-title');
 			if (titleEl) {
 				titleEl.textContent = book.title;
 			}
 
-			var authorEl = document.getElementById('marginalia-modal-book-author');
+			const authorEl = document.getElementById('marginalia-modal-book-author');
 			if (authorEl) {
 				authorEl.textContent = book.author || '';
 			}
 
-			var meta = [];
+			const meta = [];
 			if (book.publisher) {
 				meta.push(book.publisher);
 			}
@@ -370,27 +370,27 @@
 				meta.push(book.page_count + ' pages');
 			}
 
-			var metaEl = document.getElementById('marginalia-modal-book-meta');
+			const metaEl = document.getElementById('marginalia-modal-book-meta');
 			if (metaEl) {
 				metaEl.textContent = meta.join(' • ');
 			}
 
-			var modalSearch = document.querySelector('.marginalia-modal-search');
+			const modalSearch = document.querySelector('.marginalia-modal-search');
 			if (modalSearch) {
 				modalSearch.style.display = 'none';
 			}
 
-			var bookDetailsEl = document.querySelector('.marginalia-modal-book-details');
+			const bookDetailsEl = document.querySelector('.marginalia-modal-book-details');
 			if (bookDetailsEl) {
 				bookDetailsEl.style.display = '';
 			}
 
-			var backBtn = document.querySelector('.marginalia-modal-back');
+			const backBtn = document.querySelector('.marginalia-modal-back');
 			if (backBtn) {
 				backBtn.style.display = '';
 			}
 
-			var createBtn = document.querySelector('.marginalia-modal-create');
+			const createBtn = document.querySelector('.marginalia-modal-create');
 			if (createBtn) {
 				createBtn.style.display = '';
 			}
@@ -400,22 +400,22 @@
 		 * Go back to search from book details.
 		 */
 		modalBackToSearch: function() {
-			var bookDetails = document.querySelector('.marginalia-modal-book-details');
+			const bookDetails = document.querySelector('.marginalia-modal-book-details');
 			if (bookDetails) {
 				bookDetails.style.display = 'none';
 			}
 
-			var modalSearch = document.querySelector('.marginalia-modal-search');
+			const modalSearch = document.querySelector('.marginalia-modal-search');
 			if (modalSearch) {
 				modalSearch.style.display = '';
 			}
 
-			var backBtn = document.querySelector('.marginalia-modal-back');
+			const backBtn = document.querySelector('.marginalia-modal-back');
 			if (backBtn) {
 				backBtn.style.display = 'none';
 			}
 
-			var createBtn = document.querySelector('.marginalia-modal-create');
+			const createBtn = document.querySelector('.marginalia-modal-create');
 			if (createBtn) {
 				createBtn.style.display = 'none';
 			}
@@ -437,13 +437,13 @@
 			createBtn.disabled = true;
 			createBtn.textContent = marginalia.strings.creating_book;
 
-			var ratingEl = document.querySelector('input[name="marginalia_modal_rating"]:checked');
-			var readingStatusEl = document.getElementById('marginalia-modal-reading-status');
-			var dateStartedEl = document.getElementById('marginalia-modal-date-started');
-			var dateFinishedEl = document.getElementById('marginalia-modal-date-finished');
-			var privateEl = document.getElementById('marginalia-modal-private');
+			const ratingEl = document.querySelector('input[name="marginalia_modal_rating"]:checked');
+			const readingStatusEl = document.getElementById('marginalia-modal-reading-status');
+			const dateStartedEl = document.getElementById('marginalia-modal-date-started');
+			const dateFinishedEl = document.getElementById('marginalia-modal-date-finished');
+			const privateEl = document.getElementById('marginalia-modal-private');
 
-			var params = new URLSearchParams();
+			const params = new URLSearchParams();
 			params.append('action', 'marginalia_quick_add_book');
 			params.append('nonce', marginalia.nonce);
 			params.append('title', this.selectedBook.title);
@@ -475,7 +475,7 @@
 					// Reload the page to show the new book.
 					window.location.reload();
 				} else {
-					var errorMsg = response.data.message || marginalia.strings.error;
+					let errorMsg = response.data.message || marginalia.strings.error;
 					if (response.data.duplicate_id) {
 						errorMsg += ' <a href="' + response.data.edit_url + '">' + marginalia.strings.edit_existing + '</a>';
 					}
@@ -498,7 +498,7 @@
 		 * @param {string} type    Message type.
 		 */
 		showModalStatus: function(message, type) {
-			var status = document.getElementById('marginalia-modal-search-status');
+			const status = document.getElementById('marginalia-modal-search-status');
 			if (!status) {
 				return;
 			}
@@ -523,12 +523,12 @@
 		 * @param {string} editUrl  URL to edit the book.
 		 */
 		showSuccessNotice: function(message, editUrl) {
-			var html = '<div class="notice notice-success is-dismissible"><p>' +
+			const html = '<div class="notice notice-success is-dismissible"><p>' +
 				this.escapeHtml(message) +
 				' <a href="' + editUrl + '">' + marginalia.strings.edit_book + '</a>' +
 				'</p></div>';
 
-			var heading = document.querySelector('.wrap > h1');
+			const heading = document.querySelector('.wrap > h1');
 			if (heading) {
 				heading.insertAdjacentHTML('afterend', html);
 			}
@@ -538,10 +538,10 @@
 		 * Search OpenLibrary for books (edit page).
 		 */
 		searchBooks: function() {
-			var queryEl = document.getElementById('marginalia-search-query');
-			var typeEl = document.getElementById('marginalia-search-type');
-			var query = queryEl ? queryEl.value.trim() : '';
-			var type = typeEl ? typeEl.value : '';
+			const queryEl = document.getElementById('marginalia-search-query');
+			const typeEl = document.getElementById('marginalia-search-type');
+			const query = queryEl ? queryEl.value.trim() : '';
+			const type = typeEl ? typeEl.value : '';
 
 			if (!query) {
 				this.showStatus(marginalia.strings.error, 'error');
@@ -549,12 +549,12 @@
 			}
 
 			this.showStatus(marginalia.strings.searching, 'loading');
-			var searchResults = document.getElementById('marginalia-search-results');
+			const searchResults = document.getElementById('marginalia-search-results');
 			if (searchResults) {
 				searchResults.innerHTML = '';
 			}
 
-			var params = new URLSearchParams();
+			const params = new URLSearchParams();
 			params.append('action', 'marginalia_search_books');
 			params.append('nonce', marginalia.nonce);
 			params.append('query', query);
@@ -585,17 +585,17 @@
 		 * @param {Array} results Search results.
 		 */
 		displayResults: function(results) {
-			var container = document.getElementById('marginalia-search-results');
+			const container = document.getElementById('marginalia-search-results');
 			if (!container) {
 				return;
 			}
 			container.innerHTML = '';
 
 			results.forEach(function(book) {
-				var coverUrl = book.cover_url || marginalia.placeholder_cover;
-				var authors = book.authors ? book.authors.join(', ') : book.author || '';
+				const coverUrl = book.cover_url || marginalia.placeholder_cover;
+				const authors = book.authors ? book.authors.join(', ') : book.author || '';
 
-				var html = '<div class="marginalia-search-result">' +
+				const html = '<div class="marginalia-search-result">' +
 					'<img class="marginalia-search-result-cover" src="' + this.escapeHtml(coverUrl) + '" alt="" />' +
 					'<div class="marginalia-search-result-info">' +
 						'<p class="marginalia-search-result-title">' + this.escapeHtml(book.title) + '</p>' +
@@ -623,10 +623,10 @@
 		selectBook: function(e, button) {
 			e.preventDefault();
 
-			var key = button.dataset.key;
+			const key = button.dataset.key;
 
 			// Check if fields have values.
-			var hasValues = this.fieldsHaveValues();
+			const hasValues = this.fieldsHaveValues();
 			if (hasValues && !confirm(marginalia.strings.confirm_overwrite)) {
 				return;
 			}
@@ -634,7 +634,7 @@
 			button.disabled = true;
 			button.textContent = marginalia.strings.loading_details;
 
-			var params = new URLSearchParams();
+			const params = new URLSearchParams();
 			params.append('action', 'marginalia_get_book_details');
 			params.append('nonce', marginalia.nonce);
 			params.append('key', key);
@@ -670,9 +670,9 @@
 		fieldsHaveValues: function() {
 			// Check title in block editor.
 			if (typeof wp !== 'undefined' && wp.data && wp.data.select) {
-				var editorStore = wp.data.select('core/editor');
+				const editorStore = wp.data.select('core/editor');
 				if (editorStore && typeof editorStore.getEditedPostAttribute === 'function') {
-					var title = editorStore.getEditedPostAttribute('title');
+					const title = editorStore.getEditedPostAttribute('title');
 					if (title && title.trim()) {
 						return true;
 					}
@@ -680,7 +680,7 @@
 			}
 
 			// Check classic editor title and other fields.
-			var fields = [
+			const fields = [
 				'#title',
 				'#marginalia-author',
 				'#marginalia-isbn-10',
@@ -689,8 +689,8 @@
 				'#marginalia-openlibrary-key'
 			];
 
-			for (var i = 0; i < fields.length; i++) {
-				var el = document.querySelector(fields[i]);
+			for (let i = 0; i < fields.length; i++) {
+				const el = document.querySelector(fields[i]);
 				if (el && el.value && el.value.trim()) {
 					return true;
 				}
@@ -711,7 +711,7 @@
 			}
 
 			// Populate meta fields.
-			var fieldMap = {
+			const fieldMap = {
 				'author': 'marginalia-author',
 				'isbn_10': 'marginalia-isbn-10',
 				'isbn_13': 'marginalia-isbn-13',
@@ -722,9 +722,9 @@
 				'key': 'marginalia-openlibrary-key'
 			};
 
-			for (var dataKey in fieldMap) {
+			for (const dataKey in fieldMap) {
 				if (data[dataKey]) {
-					var el = document.getElementById(fieldMap[dataKey]);
+					const el = document.getElementById(fieldMap[dataKey]);
 					if (el) {
 						el.value = data[dataKey];
 					}
@@ -746,10 +746,10 @@
 		importCoverImage: function(coverUrl, title) {
 			this.showStatus(marginalia.strings.importing_cover, 'loading');
 
-			var postIdEl = document.getElementById('post_ID');
-			var postId = postIdEl ? postIdEl.value : 0;
+			const postIdEl = document.getElementById('post_ID');
+			const postId = postIdEl ? postIdEl.value : 0;
 
-			var params = new URLSearchParams();
+			const params = new URLSearchParams();
 			params.append('action', 'marginalia_import_cover');
 			params.append('nonce', marginalia.nonce);
 			params.append('cover_url', coverUrl);
@@ -788,7 +788,7 @@
 			// For block editor (Gutenberg).
 			if (typeof wp !== 'undefined' && wp.data && wp.data.dispatch && wp.data.select) {
 				// Check if we're in the block editor.
-				var editorStore = wp.data.select('core/editor');
+				const editorStore = wp.data.select('core/editor');
 				if (editorStore && typeof editorStore.getCurrentPostType === 'function') {
 					wp.data.dispatch('core/editor').editPost({
 						title: title
@@ -798,7 +798,7 @@
 			}
 
 			// For classic editor.
-			var titleEl = document.getElementById('title');
+			const titleEl = document.getElementById('title');
 			if (titleEl) {
 				titleEl.value = title;
 				titleEl.dispatchEvent(new Event('input'));
@@ -825,12 +825,12 @@
 			}
 
 			// Refresh the featured image metabox.
-			var metabox = document.getElementById('postimagediv');
+			const metabox = document.getElementById('postimagediv');
 			if (metabox) {
-				var postIdEl = document.getElementById('post_ID');
-				var nonceEl = document.getElementById('_wpnonce');
+				const postIdEl = document.getElementById('post_ID');
+				const nonceEl = document.getElementById('_wpnonce');
 
-				var params = new URLSearchParams();
+				const params = new URLSearchParams();
 				params.append('action', 'get-post-thumbnail-html');
 				params.append('post_id', postIdEl ? postIdEl.value : '');
 				params.append('thumbnail_id', attachmentId);
@@ -844,7 +844,7 @@
 				.then(function(response) { return response.text(); })
 				.then(function(responseText) {
 					if (responseText && responseText !== '0') {
-						var inside = metabox.querySelector('.inside');
+						const inside = metabox.querySelector('.inside');
 						if (inside) {
 							inside.innerHTML = responseText;
 						}
@@ -860,7 +860,7 @@
 		 * @param {string} type    Message type (loading, success, error).
 		 */
 		showStatus: function(message, type) {
-			var status = document.getElementById('marginalia-search-status');
+			const status = document.getElementById('marginalia-search-status');
 			if (!status) {
 				return;
 			}
@@ -889,7 +889,7 @@
 				return '';
 			}
 
-			var map = {
+			const map = {
 				'&': '&amp;',
 				'<': '&lt;',
 				'>': '&gt;',
