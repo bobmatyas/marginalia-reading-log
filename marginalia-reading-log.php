@@ -73,6 +73,7 @@ if ( is_admin() ) {
 	require_once MARGINALIA_PLUGIN_DIR . 'admin/class-marginalia-admin.php';
 	require_once MARGINALIA_PLUGIN_DIR . 'admin/class-marginalia-meta-box.php';
 	require_once MARGINALIA_PLUGIN_DIR . 'admin/class-marginalia-admin-columns.php';
+	require_once MARGINALIA_PLUGIN_DIR . 'admin/class-marginalia-import.php';
 }
 
 /**
@@ -115,6 +116,9 @@ function marginalia_init() {
 
 		$admin_columns = new Marginalia_Admin_Columns();
 		$admin_columns->init();
+
+		$import = new Marginalia_Import();
+		$import->init();
 	}
 
 	// Initialize public.
